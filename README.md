@@ -1,0 +1,4 @@
+member
+======
+
+MemberManager for Clubs
