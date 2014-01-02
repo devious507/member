@@ -1,0 +1,28 @@
+SQLite version 3.7.3
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite> .schema
+CREATE TABLE bankDeposit (depositNumber interger, depositDate varchar);
+CREATE TABLE duesPaid ( memberID integer, year integer, datepaid varchar, checknumber integer, amount numeric, bankDepositNumber integer, comment varchar, paymenttype varchar);
+CREATE TABLE [members] (
+[memberID] int  UNIQUE NOT NULL,
+[NameLast] varchar  NULL,
+[NameFirst] varchar  NULL,
+[address] varchar  NULL,
+[City] varchar  NULL,
+[State] varchar  NULL,
+[Zip] varchar  NULL,
+[phone] varchar  NULL,
+[email] varchar  NULL,
+[comment] varchar  NULL,
+[membersince] integer  NULL,
+[expiresyear] integer  NULL,
+[wantsemail] boolean  NULL,
+[deceased] boolean  NULL,
+[lifemember] boolean  NULL,
+[pendingifemember] boolean  NULL,
+[remaininglifeamount] numeric  NULL,
+[printenvelope] bOOLEAN DEFAULT 'false' NOT NULL
+, boardmember boolean default 0, rso boolean default 0, active_rso boolean default 0, welder boolean default 0, carpenter boolean default 0, electrician boolean default 0, plumber boolean default 0, painter boolean default 0, light_labor boolean default 0, heavy_labor boolean default 0);
+CREATE TABLE membershipCards ( memberID integer, expirationYear integer, cardNumber integer, note varchar, void boolean);
+sqlite> .q

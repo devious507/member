@@ -1,0 +1,35 @@
+div.leftMenu {
+	width: 200;
+	height: 100%;
+	background-color: #b0c4de;
+	float: left;
+}
+div.mainScreen {
+	height: 100%;
+	margin-left: 210;
+}
+td.topLeft {
+	text-align: left;
+	vertical-align: top;
+}
+th.left {
+	text-align: left;
+}
+th.right {
+	text-align: right;
+}
+td.left {
+	text-align: left;
+}
+td.right {
+	text-align: right;
+}
+td.invertBold {
+	background-color: #000000;
+	color: #ffffff;
+	font-weight: bold;
+}
+a.whitePlain {
+	color: #ffffff;
+	text-decoration: none;
+}
