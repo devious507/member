@@ -146,7 +146,8 @@ function myPaymentTypes() {
 		'gunshow_tables'=>'Gunshow Table',
 		'gunshow_door'=>'Gunshow Door Receipts',
 		'change'=>'Change Fund Surrendered',
-		'other'=>'Other / Miscellaneous'
+		'other'=>'Other / Miscellaneous',
+		'training'=>'Training / Class Payments'
 	);
 	return $rv;
 }
