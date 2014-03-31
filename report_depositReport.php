@@ -13,24 +13,34 @@ $sql="select sum(amount) as amount,checknumber FROM duespaid WHERE bankDepositNu
 $res = simpleQuery($sql,true,$db);
 $data=$res->fetchAll(PDO::FETCH_ASSOC);
 $g_total=0;
-$c_total=0;
+$chk_total=0;
+$cc_total=0;
+$cash_total=0;
 $checksSum=0;
+		$lines[]=sprintf("<tr><td class=\"right\">&nbsp;</td><td>Ck#</td><td class=\"right\">Amount</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
 foreach($data as $row) {
 	if($row['checknumber'] == -1) {
-		$lines[]=sprintf("<tr><td class=\"right\">Credit Card Total</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$row['amount']);
+		$cc_total=$row['amount'];
 	} elseif($row['checknumber'] == 0) {
-		$lines[]=sprintf("<tr><td class=\"right\">Cash Total</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$row['amount']);
+		$cash_total=$row['amount'];
 	} else {
 		$lines[]=sprintf("<tr><td class=\"right\">&nbsp;</td><td>{$row['checknumber']}</td><td class=\"right\">%.2f</td><td>&nbsp;</td><td>&nbsp;</td></tr>",$row['amount']);
-		$c_total+=$row['amount'];
+		$chk_total+=$row['amount'];
 		$checksSum+=$row['checknumber'];
 	}
 	$g_total+=$row['amount'];
 }
-if($c_total > 0) {
-	$lines[]=sprintf("<tr><td class=\"right\">Checks Total</td><td colspan=\"2\">(%d)</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$checksSum,$c_total);
+if($chk_total > 0) {
+	$lines[]=sprintf("<tr><td class=\"right\">Checks Total</td><td colspan=\"2\">(%d)</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$checksSum,$chk_total);
+}
+if($cash_total >0) {
+		$lines[]=sprintf("<tr><td class=\"right\">Cash Total</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$cash_total);
+}
+if($cc_total > 0) {
+		$lines[]=sprintf("<tr><td class=\"right\">Credit Card Total</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$cc_total);
 }
 if($g_total >0) {
+	$lines[]=sprintf("<tr><td class=\"right\">Cash & Checks Total</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td></tr>",$cash_total+$chk_total);
 	$lines[]=sprintf("<tr><td class=\"right\">Grand Total</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td></tr>",$g_total);
 }
 
