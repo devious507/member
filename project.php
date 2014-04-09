@@ -179,8 +179,19 @@ function leftMenu($db=NULL) {
 	$rv.="</ul>\n";
 	return $rv;
 }
-function generateEnvelopeBlock($memberInfo,$cardInfo) {
-	$line[]=sprintf("%s%s",$cardInfo['expirationYear'],$cardInfo['cardNumber']);
+function generateEnvelopeBlock($memberInfo,$cardInfo,$cardInfo2=NULL) {
+	if($cardInfo['expirationYear'] == NULL) {
+		$line[]=sprintf("&nbsp;");
+	} elseif($cardInfo2 != NULL) {
+		$line[]=sprintf("%s%s-%s%s",
+			$cardInfo['expirationYear'],
+			$cardInfo['cardNumber'],
+			$cardInfo2['expirationYear'],
+			$cardInfo2['cardNumber']
+		);
+	} else {
+		$line[]=sprintf("%s%s",$cardInfo['expirationYear'],$cardInfo['cardNumber']);
+	}
 	$line[]=sprintf("%s %s",$memberInfo['NameFirst'],$memberInfo['NameLast']);
 	$line[]=sprintf("%s",$memberInfo['address']);
 	$line[]=sprintf("%s, %s %s",$memberInfo['City'],$memberInfo['State'],$memberInfo['Zip']);
@@ -195,13 +206,22 @@ function generateEnvelope($db=NULL,$keep=NULL) {
 	$sql="SELECT memberID,namefirst,namelast,address,city,state,zip FROM members WHERE printenvelope=1";
 	$res = simpleQuery($sql,true,$db);
 	$data=$res->fetchAll(PDO::FETCH_ASSOC);
+	$year=date('Y');
+	$year++;
 	foreach($data as $memberInfo) {
 		$memberID=$memberInfo['memberID'];
-		$sql="SELECT expirationyear,cardnumber FROM membershipcards WHERE memberid={$memberID} AND void=0 ORDER BY expirationyear DESC,cardnumber DESC LIMIT 1";
+		$sql="SELECT expirationyear,cardnumber FROM membershipcards WHERE memberid={$memberID} AND void=0 AND expirationyear={$year} ORDER BY expirationyear DESC,cardnumber DESC LIMIT 2";
 		$res2 = simpleQuery($sql,true,$db);
 		$cardInfo = $res2->fetch(PDO::FETCH_ASSOC);
-		$blocks[]=generateEnvelopeBlock($memberInfo,$cardInfo);
+	//	print "<pre>";var_dump($cardInfo); print "\n"; print "</pre>";
+		try {
+			$cardInfo2 = $res2->fetch(PDO::FETCH_ASSOC);
+			$blocks[]=generateEnvelopeBlock($memberInfo,$cardInfo,$cardInfo2);
+		} catch (Exception $e) {
+			$blocks[]=generateEnvelopeBlock($memberInfo,$cardInfo);
+		}
 	}
+	//print "<pre>"; var_dump($blocks); exit();
 	$body="<html><head><title></title></head><body>";
 	foreach($blocks as $dat) {
 		$body.="<div style=\"margin-top: 150;margin-left: 400; font-size: large;\">{$dat}</div>";
