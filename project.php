@@ -126,6 +126,7 @@ function nextCardNumber($db=NULL) {
 	$this_year = date('Y');
 	$next_year = $this_year+1;
 	$sql="SELECT max(cardNumber) FROM membershipcards WHERE expirationYear={$next_year}";
+	$sql="SELECT max(cardNumber) FROM membershipcards WHERE expirationYear={$next_year} AND cardNumber < 1000";
 	$res=simpleQuery($sql,true,$db);
 	$row=$res->fetch(PDO::FETCH_ASSOC);
 	if($row['max(cardNumber)'] != NULL) {
@@ -206,11 +207,16 @@ function generateEnvelope($db=NULL,$keep=NULL) {
 	$sql="SELECT memberID,namefirst,namelast,address,city,state,zip FROM members WHERE printenvelope=1";
 	$res = simpleQuery($sql,true,$db);
 	$data=$res->fetchAll(PDO::FETCH_ASSOC);
-	$year=date('Y');
-	$year++;
 	foreach($data as $memberInfo) {
 		$memberID=$memberInfo['memberID'];
-		$sql="SELECT expirationyear,cardnumber FROM membershipcards WHERE memberid={$memberID} AND void=0 AND expirationyear={$year} ORDER BY expirationyear DESC,cardnumber DESC LIMIT 2";
+		$sql="SELECT max(expirationyear) as a FROM membershipcards WHERE memberid={$memberID} AND void=0";
+		$res_temp = simpleQuery($sql,true,$db);
+		$temp_data=$res_temp->fetch(PDO::FETCH_ASSOC);
+		$year=$temp_data['a'];
+		unset($res_temp);
+		unset($temp_data);
+
+		$sql="SELECT expirationyear,cardnumber FROM membershipcards WHERE memberid={$memberID} AND void=0 AND expirationyear={$year} ORDER BY expirationyear DESC,cardnumber ASC LIMIT 2";
 		$res2 = simpleQuery($sql,true,$db);
 		$cardInfo = $res2->fetch(PDO::FETCH_ASSOC);
 	//	print "<pre>";var_dump($cardInfo); print "\n"; print "</pre>";

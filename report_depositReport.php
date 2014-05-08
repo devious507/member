@@ -41,7 +41,7 @@ if($cc_total > 0) {
 }
 if($g_total >0) {
 	$lines[]=sprintf("<tr><td class=\"right\">Cash & Checks Total</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td></tr>",$cash_total+$chk_total);
-	$lines[]=sprintf("<tr><td class=\"right\">Grand Total</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td></tr>",$g_total);
+	//$lines[]=sprintf("<tr><td class=\"right\">Grand Total</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td></tr>",$g_total);
 }
 
 $t1="<table cellspacing=\"0\" cellpadding=\"5\" border=\"0\" width=\"400\">";
