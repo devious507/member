@@ -16,11 +16,14 @@ $g_total=0;
 $chk_total=0;
 $cc_total=0;
 $cash_total=0;
+$gc_total=0;
 $checksSum=0;
 		$lines[]=sprintf("<tr><td class=\"right\">&nbsp;</td><td>Ck#</td><td class=\"right\">Amount</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
 foreach($data as $row) {
 	if($row['checknumber'] == -1) {
 		$cc_total=$row['amount'];
+	} elseif($row['checknumber'] == -2) {
+		$gc_total=$row['amount'];
 	} elseif($row['checknumber'] == 0) {
 		$cash_total=$row['amount'];
 	} else {
@@ -39,6 +42,9 @@ if($cash_total >0) {
 if($cc_total > 0) {
 		$lines[]=sprintf("<tr><td class=\"right\">Credit Card Total</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$cc_total);
 }
+if($gc_total > 0) {
+		$lines[]=sprintf("<tr><td class=\"right\">Gift Cert. Redeemed</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$gc_total);
+}
 if($g_total >0) {
 	$lines[]=sprintf("<tr><td class=\"right\">Cash & Checks Total</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td></tr>",$cash_total+$chk_total);
 	//$lines[]=sprintf("<tr><td class=\"right\">Grand Total</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td></tr>",$g_total);
@@ -51,7 +57,7 @@ if(isset($lines)) {
 $t1.="</table>";
 
 
-$sql="select sum(amount),paymenttype FROM duespaid WHERE bankdepositNumber={$deposit} GROUP BY paymenttype ORDER BY paymenttype";
+$sql="select sum(amount),paymenttype FROM duespaid WHERE bankdepositNumber={$deposit} AND checknumber >=0 GROUP BY paymenttype ORDER BY paymenttype";
 $res = simpleQuery($sql,true,$db);
 $lines=array();
 $g_total=0;
@@ -67,6 +73,9 @@ foreach($data as $row) {
 $lines[]="<tr><td colspan=\"2\"><hr></td></tr>";
 $lines[]=sprintf("<tr><td class=\"right\">Total</td><td class=\"right\">%.2f</td></tr>",$g_total);
 $t2="<table cellspacing=\"0\" cellpadding=\"5\" border=\"0\">";
+$t2.="<tr><td colspan=\"2\"><hr></td></tr>";
+$t2.="<tr><td colspan=\"2\">Cash & Checks Breakdown</td></tr>";
+$t2.="<tr><td colspan=\"2\"><hr></td></tr>";
 $t2.=implode("",$lines);
 $t2.="</table>";
 

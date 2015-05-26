@@ -126,7 +126,7 @@ function nextCardNumber($db=NULL) {
 	$this_year = date('Y');
 	$next_year = $this_year+1;
 	$sql="SELECT max(cardNumber) FROM membershipcards WHERE expirationYear={$next_year}";
-	$sql="SELECT max(cardNumber) FROM membershipcards WHERE expirationYear={$next_year} AND cardNumber < 1000";
+//	$sql="SELECT max(cardNumber) FROM membershipcards WHERE expirationYear={$next_year} AND cardNumber < 1000";
 	$res=simpleQuery($sql,true,$db);
 	$row=$res->fetch(PDO::FETCH_ASSOC);
 	if($row['max(cardNumber)'] != NULL) {
@@ -143,7 +143,9 @@ function myPaymentTypes() {
 		'guest'=>'Guest Membership',
 		'merchandise'=>'Club Merchandise',
 		'donation'=>'Donation',
+		'idpa'=>'IDPA Match Fees',
 		'life'=>'Life Membership',
+		'gift_cert'=>'Gift Certificate',
 		'gunshow_tables'=>'Gunshow Table',
 		'gunshow_door'=>'Gunshow Door Receipts',
 		'change'=>'Change Fund Surrendered',
