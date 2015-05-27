@@ -87,6 +87,11 @@ function annualMembership($memberid) {
 		$body.="<td><input type=\"submit\" name=\"submit\" value=\"Post Payment\"></td>";
 	$body.="</tr>";
 	$body.="</table></form>\n";
+	$body.="<p>Quick Payment Type Selector: ";
+	$body.="<a href=\"#\" onclick=\"document.forms[0].checknumber.value='-1';document.forms[0].amount.value='102.85';\">Credit Card</a> | ";
+	$body.="<a href=\"#\" onclick=\"document.forms[0].checknumber.value='-2';document.forms[0].amount.value='100';\">Donated Gift Cert</a> | ";
+	$body.="<a href=\"#\" onclick=\"document.forms[0].checknumber.value='-3';document.forms[0].amount.value='100'\">Gift Cert</a>";
+	$body.="</p>\n";
 	return $body;
 }
 ?>

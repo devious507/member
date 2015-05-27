@@ -17,12 +17,15 @@ $chk_total=0;
 $cc_total=0;
 $cash_total=0;
 $gc_total=0;
+$dgc_total=0;
 $checksSum=0;
 		$lines[]=sprintf("<tr><td class=\"right\">&nbsp;</td><td>Ck#</td><td class=\"right\">Amount</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
 foreach($data as $row) {
 	if($row['checknumber'] == -1) {
 		$cc_total=$row['amount'];
 	} elseif($row['checknumber'] == -2) {
+		$dgc_total=$row['amount'];
+	} elseif($row['checknumber'] == -3) {
 		$gc_total=$row['amount'];
 	} elseif($row['checknumber'] == 0) {
 		$cash_total=$row['amount'];
@@ -43,7 +46,10 @@ if($cc_total > 0) {
 		$lines[]=sprintf("<tr><td class=\"right\">Credit Card Total</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$cc_total);
 }
 if($gc_total > 0) {
-		$lines[]=sprintf("<tr><td class=\"right\">Gift Cert. Redeemed</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$gc_total);
+		$lines[]=sprintf("<tr><td class=\"right\">Purch. Gift Cert.</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$gc_total);
+}
+if($dgc_total > 0) {
+		$lines[]=sprintf("<tr><td class=\"right\">Donated Gift Cert.</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td><td>&nbsp;</td></tr>",$dgc_total);
 }
 if($g_total >0) {
 	$lines[]=sprintf("<tr><td class=\"right\">Cash & Checks Total</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class=\"right\">%.2f</td></tr>",$cash_total+$chk_total);
