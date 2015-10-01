@@ -6,7 +6,7 @@ ini_set("display_errors","On");
 if(DIRECTORY_SEPARATOR == '/') {
 	define("DATAFILE","data/membership.sqlite3");
 	if($_SERVER['PHP_AUTH_USER'] != 'membership' || $_SERVER['PHP_AUTH_PW'] != 'mrpc2705') {
-		doShowAuth();
+			doShowAuth();
 	}
 } else { 
 	$storagelocation = exo_getglobalvariable('HEPubStorageLocation', '');
@@ -166,8 +166,19 @@ function leftMenu($db=NULL) {
 		$res=simpleQuery($sql,true,$db);
 		$row=$res->fetch();
 		$envelopeCount = $row[0];
+
+		// Unique Members
+		$year=date('Y')+1;
+		$sql="select memberid,expirationyear FROM membershipcards WHERE expirationyear={$year} GROUP BY memberid,expirationyear";
+		$res = simpleQuery($sql,true,$db);
+		$data=$res->fetchAll(PDO::FETCH_ASSOC);
+		$memberCount = count($data);
 	}
-	$rv ="<ul>\n";
+	$rv='';
+	if(isset($memberCount)) {
+		$rv.="\t<b>&nbsp;&nbsp;{$memberCount} Members</b><hr>\n";
+	}
+	$rv.="<ul>\n";
 	$rv.="\t<li><a href=\"index.php\">Membership File</a></li>\n";
 	$rv.="\t<li><a href=\"reporting.php\">Reporting</a></li>\n";
 	$rv.="\t<li><a href=\"utilities.php\">Utilities</a></li>\n";
