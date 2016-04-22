@@ -68,7 +68,13 @@ function miscSale($memberid) {
 }
 function annualMembership($memberid) {
 	global $db;
-	$nextCard = nextCardNumber($db);
+	$nextYear=date('Y')+2;
+	$lastYear=date('Y');
+	$thisYear=date('Y')+1;
+	$nextCard = nextCardNumber($db,$thisYear);
+	$thisYearCard=$nextCard;
+	$nextYearCard=nextCardNumber($db,$nextYear);
+	$lastYearCard=nextCardNumber($db,$lastYear);
 	$types = myPaymentTypes();
 	$clubMemberName="<a class=\"whitePlain\" href=\"memberRecord.php?memberID={$memberid}\">".getClubMemberNameByMemberID($memberid,$db)."</a>";
 	$expYear=date('Y'); $expYear++;
@@ -90,7 +96,11 @@ function annualMembership($memberid) {
 	$body.="<p>Quick Payment Type Selector: ";
 	$body.="<a href=\"#\" onclick=\"document.forms[0].checknumber.value='-1';document.forms[0].amount.value='102.85';\">Credit Card</a> | ";
 	$body.="<a href=\"#\" onclick=\"document.forms[0].checknumber.value='-2';document.forms[0].amount.value='100';\">Donated Gift Cert</a> | ";
-	$body.="<a href=\"#\" onclick=\"document.forms[0].checknumber.value='-3';document.forms[0].amount.value='100'\">Gift Cert</a>";
+	$body.="<a href=\"#\" onclick=\"document.forms[0].checknumber.value='-3';document.forms[0].amount.value='100'\">Gift Cert</a> | ";
+	$body.="<a href=\"#\" onclick=\"document.forms[0].card_number.value='$lastYearCard';document.forms[0].card_expire.value='{$lastYear}';\">{$lastYear}</a> | ";
+	$body.="<a href=\"#\" onclick=\"document.forms[0].card_number.value='$thisYearCard';document.forms[0].card_expire.value='{$thisYear}';\">{$thisYear}</a> | ";
+	$body.="<a href=\"#\" onclick=\"document.forms[0].card_number.value='$nextYearCard';document.forms[0].card_expire.value='{$nextYear}';\">{$nextYear}</a> | ";
+	$body.="<a href=\"#\" onclick=\"document.forms[0].amount.value='0';\">\$0.00</a>";
 	$body.="</p>\n";
 	return $body;
 }

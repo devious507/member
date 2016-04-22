@@ -118,15 +118,13 @@ function getClubMemberNameByMemberID($memberid,$db=NULL) {
 	$row = $res->fetch(PDO::FETCH_ASSOC);
 	return $row['NameFirst']." ".$row['NameLast'];
 }
-function nextCardNumber($db=NULL) {
-	if($db == NULL) {
-		print "DB Handle must be passed to nextCardNumbeR()";
+function nextCardNumber($db=NULL,$year=NULL) {
+	if( ($db == NULL) || ($year==NULL) ) {
+		print "DB Handle and year must be passed to nextCardNumbeR()";
 		exit();
 	}
-	$this_year = date('Y');
-	$next_year = $this_year+1;
+	$next_year=$year;
 	$sql="SELECT max(cardNumber) FROM membershipcards WHERE expirationYear={$next_year}";
-//	$sql="SELECT max(cardNumber) FROM membershipcards WHERE expirationYear={$next_year} AND cardNumber < 1000";
 	$res=simpleQuery($sql,true,$db);
 	$row=$res->fetch(PDO::FETCH_ASSOC);
 	if($row['max(cardNumber)'] != NULL) {
