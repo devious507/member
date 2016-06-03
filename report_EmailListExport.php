@@ -13,6 +13,9 @@ $res = simpleQuery($sql,true,$db);
 $data=$res->fetchAll(PDO::FETCH_ASSOC);
 header("Content-type: text/plain");
 foreach($data as $entry) {
-	printf("%s\t%s\t%s\n",$entry['email'],$entry['NameFirst'],$entry['NameLast']);
+	if($entry['email'] != '') {
+		printf("%s\t%s\t%s\n",$entry['email'],$entry['NameFirst'],$entry['NameLast']);
+	}
 }
+
 ?>

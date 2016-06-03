@@ -19,6 +19,7 @@ $menu.= "</ul></li>";
 $menu.= "<li>Mebership Lists By Name<ul>";
 $menu.= "<li><a href=\"report_memberRosterByName.php?year={$this_year}\">{$last_year} Membership Year</a></li>\n";
 $menu.= "<li><a href=\"report_memberRosterByName.php?year={$next_year}\">{$this_year} Membership Year</a></li>\n";
+$menu.= "<li><a href=\"report_EmailListExport.php\">Email List Export</a></li>\n";
 $menu.="</ul></li>";
 
 $menu.= "<li>Membership Lists By Flag<ul>";
