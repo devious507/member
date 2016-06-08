@@ -25,14 +25,36 @@ function myDB($prefix='') {
 	$dsn = "sqlite:".$prefix.DATAFILE;
 	$db = new PDO($dsn);
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$sql_members="CREATE TABLE IF NOT EXISTS members ( memberID int, NameLast varchar, NameFirst varchar, address varchar, City varchar, State varchar, Zip varchar, phone varchar, email varchar, comment varchar, membersince integer, expiresyear integer, wantsemail boolean, deceased boolean, lifemember boolean, pendingifemember boolean, remaininglifeamount numeric)";
-	$sql_duespaid= "CREATE TABLE IF NOT EXISTS duesPaid ( memberID integer, year integer, datepaid varchar, checknumber integer, amount numeric, bankDepositNumber integer, comment varchar, paymenttype varchar)";
-	$sql_membershipcards= "CREATE TABLE IF NOT EXISTS membershipCards ( memberID integer, expirationYear integer, cardNumber integer, note varchar, void boolean)";
-	$sql_bankdeposit="CREATE TABLE IF NOT EXISTS bankDeposit (depositNumber interger, depositDate varchar)";
-	$db->exec($sql_members);
-	$db->exec($sql_duespaid);
-	$db->exec($sql_membershipcards);
-	$db->exec($sql_bankdeposit);
+
+	// Original System Tables
+	$sql[]="CREATE TABLE IF NOT EXISTS bankDeposit (depositNumber interger, depositDate varchar)";
+	$sql[]="CREATE TABLE IF NOT EXISTS duesPaid ( memberID integer, year integer, datepaid varchar, checknumber integer, amount numeric, bankDepositNumber integer, comment varchar, paymenttype varchar)";
+	$sql[]="CREATE TABLE IF NOT EXISTS [members] ([memberID] int  UNIQUE NOT NULL,[NameLast] varchar  NULL,[NameFirst] varchar  NULL,[address] varchar  NULL,[City] varchar  NULL,[State] varchar  NULL,[Zip] varchar  NULL,[phone] varchar  NULL,[email] varchar  NULL,[comment] varchar  NULL,[membersince] integer  NULL,[expiresyear] integer  NULL,[wantsemail] boolean  NULL,[deceased] boolean  NULL,[lifemember] boolean  NULL,[pendingifemember] boolean  NULL,[remaininglifeamount] numeric  NULL,[printenvelope] bOOLEAN DEFAULT 'false' NOT NULL, boardmember boolean default 0, rso boolean default 0, active_rso boolean default 0, welder boolean default 0, carpenter boolean default 0, electrician boolean default 0, plumber boolean default 0, painter boolean default 0, light_labor boolean default 0, heavy_labor boolean default 0, lat numeric, lon numeric)";
+	$sql[]="CREATE TABLE IF NOT EXISTS membershipCards ( memberID integer, expirationYear integer, cardNumber integer, note varchar, void boolean)";
+
+	// 6/8/2016 -- Add payment_types table
+	$sql[]="CREATE TABLE IF NOT EXISTS payment_types (paymentTypeID integer PRIMARY KEY, paymentType varchar)";
+	$sql[]="INSERT OR REPLACE INTO payment_types VALUES (-1,'Credit Card')";
+	$sql[]="INSERT OR REPLACE INTO payment_types VALUES (-2,'Donated Gift Certificate')";
+	$sql[]="INSERT OR REPLACE INTO payment_types VALUES (-3,'Gift Certificate')";
+
+	// Add Spouse Fields to members table
+	$alter[]="alter table members add column spouse_first varchar";
+	$alter[]="alter table members add column spouse_last varchar";
+	$alter[]="alter table members add column spouse_phone varchar";
+	$alter[]="alter table members add column spouse_email varchar";
+	
+	foreach($sql as $statement) {
+		$db->exec($statement);
+	}
+	foreach($alter as $statement) {
+		try {
+			$db->exec($statement);
+		} catch (Exception $e) {
+			// Not doing anything with this
+		}
+	}
+
 	return $db;
 }
 

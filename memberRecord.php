@@ -146,11 +146,15 @@ $member = "<form method=\"post\" action=\"updateMember.php\">";
 $member.= "<input type=\"hidden\" name=\"memberID\" value=\"{$row['memberID']}\">";
 $member.= "<table cellspacing=\"0\" cellpadding=\"5\" border=\"1\">";
 $member.= "<tr><td class=\"invertBold\">Record # {$row['memberID']}</td><td colspan=\"5\">{$topMenu}</td></tr>";
-$member.= "<tr><td>First Name</td><td><input id=\"focusBox\" type=\"text\" size=\"15\" name=\"NameFirst\" value=\"{$row['NameFirst']}\"></td><td>Last Name</td><td><input type=\"text\" size=\"15\" name=\"NameLast\" value=\"{$row['NameLast']}\"></td><td class=\"topLeft\" rowspan=\"8\">{$infoCol}</td><td rowspan=\"8\" class=\"topLeft\">{$cards}</td></tr>";
+$member.= "<tr><td>First Name</td><td><input id=\"focusBox\" type=\"text\" size=\"15\" name=\"NameFirst\" value=\"{$row['NameFirst']}\"></td><td>Last Name</td><td><input type=\"text\" size=\"15\" name=\"NameLast\" value=\"{$row['NameLast']}\"></td><td class=\"topLeft\" rowspan=\"11\">{$infoCol}</td><td rowspan=\"11\" class=\"topLeft\">{$cards}</td></tr>";
 $member.= "<tr><td>Address</td><td colspan=\"3\"><input type=\"text\" size=\"30\" name=\"address\" value=\"{$row['address']}\"></td></tr>";
 $member.= "<tr><td>City, State Zip</td><td><input type=\"text\" size=\"10\" name=\"City\" value=\"{$row['City']}\"></td><td>, <input type=\"text\" size=\"4\" name=\"State\" value=\"{$row['State']}\"></td><td><input type=\"text\" name=\"Zip\" size=\"6\" value=\"{$row['Zip']}\"></td></tr>";
 $member.= "<tr><td>Phone</td><td colspan=\"3\"><input type=\"text\" name=\"phone\" value=\"{$row['phone']}\" size=\"25\"></td></tr>";
 $member.= "<tr><td>Email</td><td colspan=\"3\"><input type=\"text\" name=\"email\" value=\"{$row['email']}\" size=\"25\"></td></tr>";
+// Spouse INfo
+$member.="<tr><td>Spouse First</td><td><input type=\"text\" size=\"15\" name=\"spouse_first\" value=\"{$row['spouse_first']}\"></td><td>Spouse Last</td><td><input type=\"text\" size=\"15\" name=\"spouse_last\" value=\"{$row['spouse_last']}\"></td></tr>";
+$member.= "<tr><td>Spouse Phone</td><td colspan=\"3\"><input type=\"text\" name=\"spouse_phone\" value=\"{$row['spouse_phone']}\" size=\"25\"></td></tr>";
+$member.= "<tr><td>Spouse Email</td><td colspan=\"3\"><input type=\"text\" name=\"spouse_email\" value=\"{$row['spouse_email']}\" size=\"25\"></td></tr>";
 $member.= "<tr><td colspan=\"4\">Comments</td></tr>";
 $member.= "<tr><td colspan=\"4\"><textarea rows=\"6\" cols=\"50\" name=\"comment\">{$row['comment']}</textarea></td></tr>";
 $member.= "<tr><td colspan=\"4\"><input type=\"submit\" name=\"update\" value=\"Update Record\"></td></tr>";

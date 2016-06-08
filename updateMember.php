@@ -17,6 +17,17 @@ if(strlen($phone_temp) == 10) {
 	$nxx   = substr($phone_temp,6,4);
 	$_POST['phone'] = $acode."-".$prefix."-".$nxx;
 }
+$phone_temp = preg_replace("/[^0-9]/", '', $_POST['spouse_phone']);
+if(strlen($phone_temp) == 10) {
+	$acode = substr($phone_temp,0,3);
+	$prefix= substr($phone_temp,3,3);
+	$nxx   = substr($phone_temp,6,4);
+	$_POST['spouse_phone'] = $acode."-".$prefix."-".$nxx;
+}
+if(($_POST['spouse_first'] != '') && ($_POST['spouse_last'] == '')) {
+//if(($_POST['spouse_first'] != '')) {
+	$_POST['spouse_last']=$_POST['NameLast'];
+}
 
 foreach($_POST as $k=>$v) {
 	$sets[]=$k."='".preg_replace("/'/","''",$v)."'";

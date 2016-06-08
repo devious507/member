@@ -22,7 +22,7 @@ $res=simpleQuery($sql,true,$db);
 $data=$res->fetchAll(PDO::FETCH_ASSOC);
 $voids=count($data);
 
-$sql="SELECT c.cardnumber,c.void,m.namelast,m.namefirst,m.address,m.city,m.state,m.phone,c.note FROM membershipcards AS c LEFT OUTER JOIN members AS m ON c.memberid=m.memberid WHERE c.expirationyear={$_GET['year']} ORDER BY m.namelast,m.namefirst";
+$sql="SELECT c.cardnumber,c.void,m.namelast||', '||m.namefirst,m.phone,m.spouse_last||', '||m.spouse_first,m.spouse_phone,c.note FROM membershipcards AS c LEFT OUTER JOIN members AS m ON c.memberid=m.memberid WHERE c.expirationyear={$_GET['year']} ORDER BY m.namelast,m.namefirst";
 $res = simpleQuery($sql,true,$db);
 $body="<table cellpadding=\"2\" cellspacing=\"0\" border=\"0\">";
 if(!isset($_GET['print']) && !isset($_GET['pdf'])) {
