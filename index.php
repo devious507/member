@@ -11,11 +11,46 @@ if(isset($_POST['search'])) {
 		$v=preg_replace("/\?/",'%',$v);
 		if($v != '') {
 			if(preg_match("/%/",$v)) {
-				$wheres[] = "{$k} LIKE '{$v}'";
+				switch($k) {
+				case "NameLast":
+					$wheres[] = "({$k} LIKE '{$v}' OR spouse_last LIKE '{$v}')";
+					break;
+				case "NameFirst":
+					$wheres[] = "({$k} LIKE '{$v}' OR spouse_first LIKE '{$v}')";
+					break;
+				case "email":
+					$wheres[] = "({$k} LIKE '{$v}' OR spouse_email LIKE '{$v}')";
+					break;
+				case "phone":
+					$wheres[] = "({$k} LIKE '{$v}' OR spouse_phone LIKE '{$v}')";
+					break;
+				default:
+					$wheres[] = "{$k} LIKE '{$v}'";
+				}
 			} elseif($v == 'NULL') {
-				$wheres[] = "({$k} IS NULL OR {$k} = '')";
+				switch($k) {
+				default:
+					$wheres[] = "({$k} IS NULL OR {$k} = '')";
+					break;
+				}
 			} else {
-				$wheres[] = "{$k} = '{$v}'";
+				switch($k) {
+				case "NameLast":
+					$wheres[] = "({$k} = '{$v}' OR spouse_last = '{$v}')";
+					break;
+				case "NameFirst":
+					$wheres[] = "({$k} = '{$v}' OR spouse_first = '{$v}')";
+					break;
+				case "email":
+					$wheres[] = "({$k} = '{$v}' OR spouse_email = '{$v}')";
+					break;
+				case "phone":
+					$wheres[] = "({$k} = '{$v}' OR spouse_phone = '{$v}')";
+					break;
+				default:
+					$wheres[] = "{$k} = '{$v}'";
+					break;
+				}
 			}
 		}
 	}
@@ -39,7 +74,22 @@ if(isset($_POST['search'])) {
 			} else {
 				$href = "<a href=\"memberRecord.php?memberID={$row['memberID']}\">{$row['NameLast']}, {$row['NameFirst']}</a>";
 			}
-			$body.="<tr><td>{$href}</td><td>{$row['address']}</td><td>{$row['phone']}</td><td>{$row['email']}</td></tr>\n";
+			if( ($row['spouse_last'] != '') && ($row['spouse_first'] != '') ) {
+				$spouse=$row['spouse_last'].", ".$row['spouse_first'];
+			} else {
+				$spouse='&nbsp;';
+			}
+			if($row['spouse_phone'] != '') {
+				$spouse_phone = $row['spouse_phone'];
+			} else {
+				$spouse_phone = '&nbsp';
+			}
+			if($row['spouse_email'] != '') {
+				$spouse_email = $row['spouse_email'];
+			} else {
+				$spouse_email = '&nbsp';
+			} 
+			$body.="<tr><td>{$href}</td><td>{$row['email']}</td><td>{$row['address']}</td><td>{$row['phone']}</td><td>{$spouse}</td><td>{$spouse_email}</td><td>{$spouse_phone}</td></tr>\n";
 		}
 		$body.="</table>\n";
 		renderPage($body,true,'Member Management',$db);

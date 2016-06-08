@@ -25,11 +25,15 @@ if(strlen($phone_temp) == 10) {
 	$_POST['spouse_phone'] = $acode."-".$prefix."-".$nxx;
 }
 if(($_POST['spouse_first'] != '') && ($_POST['spouse_last'] == '')) {
-//if(($_POST['spouse_first'] != '')) {
 	$_POST['spouse_last']=$_POST['NameLast'];
 }
 
+if(preg_match("/ \& $/",$_POST['NameFirst'])) {
+	$tmp=preg_replace("/ \& $/","",$_POST['NameFirst']);
+	$_POST['NameFirst']=$tmp;
+}
 foreach($_POST as $k=>$v) {
+	$v=trim($v);
 	$sets[]=$k."='".preg_replace("/'/","''",$v)."'";
 }
 
