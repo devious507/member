@@ -1,6 +1,11 @@
 <?php
 
 require_once("project.php");
+if($_SESSION['write'] == 0 ) {
+	header("Location: index.php");
+	exit();
+}
+
 $db=myDB();
 $sql="SELECT memberID,max(expirationYear) as expirationYear FROM membershipcards GROUP BY memberID ORDER BY memberID";
 $res=simpleQuery($sql,true,$db);

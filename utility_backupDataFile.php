@@ -1,6 +1,11 @@
 <?php
 
 require_once("project.php");
+if($_SESSION['write'] == 0 ) {
+	header("Location: index.php");
+	exit();
+}
+
 
 
 $dataFile=file_get_contents(DATAFILE);

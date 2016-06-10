@@ -1,8 +1,13 @@
 <?php
 
 include_once("../project.php");
+if($_SESSION['write'] == 0 ) {
+	header("Location: index.php");
+	exit();
+}
 include_once("include/GoogleMap.php");
 include_once("include/JSMin.php");
+
 
 $map = new GoogleMapAPI();
 $map->_minify_js=isset($_REQUEST['min'])?FALSE:TRUE;

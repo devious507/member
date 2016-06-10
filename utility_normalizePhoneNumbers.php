@@ -1,6 +1,11 @@
 <?php
 
 require_once("project.php");
+if($_SESSION['write'] == 0 ) {
+	header("Location: index.php");
+	exit();
+}
+
 
 $db=myDB();
 $sql="select memberid,phone from members ORDER BY memberid";
@@ -23,5 +28,5 @@ foreach($data as $row) {
 		simpleQuery($sql,true,$db);
 	}
 }
-print "<a href=\"index.php\">Back to Index</a>";
+print "UPDATE THIS: NEEDS TO NORMALIZE SPOUSE PHONE<a href=\"index.php\">Back to Index</a>";
 ?>

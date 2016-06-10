@@ -1,9 +1,14 @@
 <?php
 
 require_once("project.php");
+if($_SESSION['write'] == 0 ) {
+	header("Location: index.php");
+	exit();
+}
+
 
 define("ANNUAL_MEMBERSHIP",100);
-define("GUEST_PASS",10);
+define("GUEST_PASS",25);
 $db=myDB();
 if(!isset($_GET['type']) || !isset($_GET['memberID'])) {
 	header("Location: index.php");

@@ -2,22 +2,74 @@
 
 error_reporting(E_ALL);
 ini_set("display_errors","On");
+define("development_mode",0);
+
+session_name("membershipApp");
+session_start();
+
+// Work Around for Older Versions of PHP < 5.6.0
+
+if(!function_exists('hash_equals')) {
+	function hash_equals($str1, $str2) {
+		if(strlen($str1) != strlen($str2)) {
+			return false;
+		} else {
+			$res = $str1 ^ $str2;
+			$ret = 0;
+			for($i = strlen($res) - 1; $i >= 0; $i--) $ret |= ord($res[$i]);
+			return !$ret;
+		}
+	}
+}
 
 if(DIRECTORY_SEPARATOR == '/') {
 	define("DATAFILE","data/membership.sqlite3");
-	if($_SERVER['PHP_AUTH_USER'] != 'membership' || $_SERVER['PHP_AUTH_PW'] != 'mrpc2705') {
+	if(isset($_POST['username']) && isset($_POST['password'])) {
+		$_SESSION['username']=$_POST['username'];
+		$_SESSION['password']=$_POST['password'];
+		header("Location: index.php");
+		exit();
+	}
+	if(isset($_SESSION['username']) && isset($_SESSION['password'])) {
+		$db=myDB();
+		$sql=sprintf("SELECT password,write FROM users WHERE username='%s'",$_SESSION['username']);
+		$res = simpleQuery($sql,true,$db);
+		$data = $res->fetchAll(PDO::FETCH_ASSOC);
+		if(isset($data[0])) {
+			if(hash_equals($data[0]['password'], crypt($_SESSION['password'],$data[0]['password']))) {
+				$_SESSION['write']=$data[0]['write'];
+			} else {
+				doShowAuth();
+				exit();
+			}
+		}
+		if(count($data) == 1) {
+			$_SESSION['write']=$data[0]['write'];
+		} else {
 			doShowAuth();
+			exit();
+		}
+	} else {
+		doShowAuth();
 	}
 } else { 
-	$storagelocation = exo_getglobalvariable('HEPubStorageLocation', '');
-	$dbname = $storagelocation.'membership.sqlite3';
-	define("DATAFILE",$dbname);
+	$body="<p>Windows Operating system Unsupported at this time</p>";
+	renderPage($body,false);
+	// Windows Storage Location Stuff, unused currently
+	//$storagelocation = exo_getglobalvariable('HEPubStorageLocation', '');
+	//$dbname = $storagelocation.'membership.sqlite3';
+	//define("DATAFILE",$dbname);
 }
 
 function doShowAuth() {
-	header("WWW-Authenticate: Basic realm=\"Membership Management\"");
-	header("HTTP/1.0 401 Unauthorized");
-	echo "401 Unauthorized";
+	$body ="<form method=\"post\" action=\"index.php\">";
+	$body.="<table cellpadding=\"5\" cellspacing=\"0\" border=\"1\">";
+	$body.="<tr><td>Login</td><td><input type=\"text\" size=\"10\" name=\"username\"></td></tr>";
+	$body.="<tr><td>Password</td><td><input type=\"password\" size=\"10\" name=\"password\"></td></tr>";
+	$body.="<tr><td colspan=\"2\"><input type=\"submit\" value=\"Login\"></td></tr>";
+	$body.="</table>";
+	$body.="</form>";
+	renderPage($body,false);
 	exit();
 }
 
@@ -38,6 +90,9 @@ function myDB($prefix='') {
 	$sql[]="INSERT OR REPLACE INTO payment_types VALUES (-2,'Donated Gift Certificate')";
 	$sql[]="INSERT OR REPLACE INTO payment_types VALUES (-3,'Gift Certificate')";
 
+	// 6/8/2016 -- Create users table
+	$sql[]="CREATE TABLE IF NOT EXISTS users (username varchar PRIMARY KEY, password varchar, write bool)";
+
 	// Add Spouse Fields to members table
 	$alter[]="alter table members add column spouse_first varchar";
 	$alter[]="alter table members add column spouse_last varchar";
@@ -55,6 +110,17 @@ function myDB($prefix='') {
 		}
 	}
 
+	$sql="SELECT count(*) as c FROM users";
+	$res = simpleQuery($sql,true,$db);
+	$data = $res->fetchAll(PDO::FETCH_ASSOC);
+	if($data[0]['c'] == 0) {
+		$pass=crypt('admin');
+		$sql="INSERT INTO users VALUES ('admin','{$pass}',1)";
+		$res=$db->exec($sql);
+		$pass=crypt(md5(rand(100000,1000000)));
+		$sql="INSERT INTO users VALUES ('readonly','{$pass}',0)";
+		$res=$db->exec($sql);
+	}
 	return $db;
 }
 
@@ -194,9 +260,18 @@ function leftMenu($db=NULL) {
 		$data=$res->fetchAll(PDO::FETCH_ASSOC);
 		$memberCount = count($data);
 	}
-	$rv='';
+	if(isset($_SESSION['username'])) {
+		$rv="<b>".ucfirst(strtolower($_SESSION['username']))."</b><hr>";
+	} else {
+		$rv='';
+	}
 	if(isset($memberCount)) {
 		$rv.="\t<b>&nbsp;&nbsp;{$memberCount} Members</b><hr>\n";
+	}
+	if(isset($_SESSION['write'])) {
+		if($_SESSION['write'] == 0) {
+			$rv.="\t<b>READ ONLY<br>SESSION</b><hr>\n";
+		}
 	}
 	$rv.="<ul>\n";
 	$rv.="\t<li><a href=\"index.php\">Membership File</a></li>\n";
@@ -209,6 +284,13 @@ function leftMenu($db=NULL) {
 		$rv.="\t<li><a href=\"getEnvelopePDF.php\">Print Envelopes ({$envelopeCount})</a></li>\n";
 	} else {
 		$rv.="\t<li><a href=\"getEnvelopePDF.php\">Print Envelopes</a></li>\n";
+	}
+	$rv.="<hr>\n";
+	$rv.="\t<li><a href=\"utility_logout.php\">Logout</a></li>\n";
+	$rv.="<hr>\n";
+	if(development_mode) {
+		$rv.="<hr>\n";
+		$rv.="\t<li><a href=\"utility_dumper.php\">Test Dump Vars</a></li>\n";
 	}
 	$rv.="</ul>\n";
 	return $rv;
