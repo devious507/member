@@ -1,10 +1,7 @@
 <?php
 
 require_once("project.php");
-if($_SESSION['write'] == 0 ) {
-	header("Location: index.php");
-	exit();
-}
+checkIsWriter();
 
 $db = myDB();
 

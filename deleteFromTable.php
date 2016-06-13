@@ -1,6 +1,8 @@
 <?php
 
 require_once("project.php");
+checkIsWriter();
+
 $db=myDB();
 if(!isset($_GET['confirm'])) {
 	$newQS=$_SERVER['QUERY_STRING']."&confirm=true";

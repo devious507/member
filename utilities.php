@@ -21,8 +21,8 @@ if($_SESSION['write'] == 1) {
 
 	$menu.="\t<li><a href=\"map/geoCode.php\">GeoCode Address's in Database</a><br>&nbsp;</li>\n";
 
-	$menu.="\t<li><a href=\"utility_userManagement.php\">User Management</a><br>&nbsp;</li>\n";
 }
+$menu.="\t<li><a href=\"utility_userManagement.php\">User Management</a><br>&nbsp;</li>\n";
 $menu.="</ul>\n";
 
 renderPage($menu,true,'Member Management',$db);

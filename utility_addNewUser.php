@@ -1,11 +1,8 @@
 <?php
 
 require_once("project.php");
+checkIsWriter();
 
-if($_SESSION['write'] == 0 ) {
-	header("Location: index.php");
-	exit();
-}
 
 $body ="<form method=\"post\" action=\"utility_addNewUserAction.php\">";
 $body.="<table cellpadding=\"3\" border=\"0\" cellspacing=\"0\">";

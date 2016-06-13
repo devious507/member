@@ -1,11 +1,8 @@
 <?php
 
 require_once("project.php");
+checkIsWriter();
 
-if($_SESSION['write'] == 0 ) {
-	header("Location: index.php");
-	exit();
-}
 
 if(!isset($_GET['username'])) {
 	header("Location: utility_userManagement.php");

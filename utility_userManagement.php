@@ -3,11 +3,10 @@
 require_once("project.php");
 
 if($_SESSION['write'] == 0 ) {
-	header("Location: index.php");
-	exit();
+	$sql="SELECT username,write FROM users WHERE username='{$_SESSION['username']}'";
+} else {
+	$sql="SELECT username,write FROM users ORDER BY username";
 }
-
-$sql="SELECT username,write FROM users ORDER BY username";
 $res = simpleQuery($sql,true,$db);
 $data = $res->fetchAll(PDO::FETCH_ASSOC);
 $body="<table cellpadding=\"5\" cellspacing=\"0\" border=\"1\">";

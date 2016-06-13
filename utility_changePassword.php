@@ -2,11 +2,11 @@
 
 require_once("project.php");
 
-if($_SESSION['write'] == 0 ) {
+if(!isset($_GET['username'])) {
 	header("Location: utility_userManagement.php");
 	exit();
 }
-if(!isset($_GET['username'])) {
+if( ($_SESSION['write'] == 0) && ($_GET['username'] != $_SESSION['username']) ) {
 	header("Location: utility_userManagement.php");
 	exit();
 }

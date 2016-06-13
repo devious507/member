@@ -1,6 +1,8 @@
 <?php
 
 require_once("project.php");
+checkIsWriter();
+
 $db=myDB();
 
 $sql="SELECT * FROM {$_GET['table']} WHERE {$_GET['wheres']}";

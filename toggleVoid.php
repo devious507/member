@@ -1,7 +1,10 @@
 <?php
 
 require_once("project.php");
+checkIsWriter();
+
 $db=myDB();
+
 
 if(!isset($_GET['expirationyear']) || !isset($_GET['cardnumber'])) {
 	header("Location: index.php");

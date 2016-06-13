@@ -61,6 +61,12 @@ if(DIRECTORY_SEPARATOR == '/') {
 	//define("DATAFILE",$dbname);
 }
 
+function checkIsWriter() {
+	if( (isset($_SESSION['write'])) && ($_SESSION['write'] == 0) ) {
+		header("Location: index.php");
+		exit();
+	}
+}
 function doShowAuth() {
 	$body ="<form method=\"post\" action=\"index.php\">";
 	$body.="<table cellpadding=\"5\" cellspacing=\"0\" border=\"1\">";
@@ -116,9 +122,6 @@ function myDB($prefix='') {
 	if($data[0]['c'] == 0) {
 		$pass=crypt('admin');
 		$sql="INSERT INTO users VALUES ('admin','{$pass}',1)";
-		$res=$db->exec($sql);
-		$pass=crypt(md5(rand(100000,1000000)));
-		$sql="INSERT INTO users VALUES ('readonly','{$pass}',0)";
 		$res=$db->exec($sql);
 	}
 	return $db;

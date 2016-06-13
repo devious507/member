@@ -7,6 +7,8 @@ if(!isset($_GET['flag']) || !isset($_GET['memberID'])) {
 	header("Location: index.php");
 	exit();
 }
+checkIsWriter();
+
 $flag = $_GET['flag'];
 require_once("project.php");
 
