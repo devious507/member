@@ -81,7 +81,12 @@ function doShowAuth() {
 
 function myDB($prefix='') {
 	$dsn = "sqlite:".$prefix.DATAFILE;
-	$db = new PDO($dsn);
+	try {
+		$db = new PDO($dsn);
+	} catch (Exception $e) {
+		$dsn="sqlite:../".$prefix.DATAFILE;
+		$db = new PDO($dsn);
+	}
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	// Original System Tables
