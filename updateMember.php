@@ -1,6 +1,7 @@
 <?php
 
 require_once("project.php");
+//var_dump($_SESSION); exit();
 
 if($_SESSION['write'] == 0 ) {
 	header("Location: index.php");

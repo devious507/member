@@ -290,10 +290,9 @@ function leftMenu($db=NULL) {
 	$rv.="<ul>\n";
 	if(isset($envelopeCount)) {
 		$rv.="\t<li><a href=\"getEnvelopePDF.php\">Print Envelopes ({$envelopeCount})</a></li>\n";
-	} else {
-		$rv.="\t<li><a href=\"getEnvelopePDF.php\">Print Envelopes</a></li>\n";
-	}
-	$rv.="<hr>\n";
+		$rv.="\t<li><a href=\"addressLabelsCSV.php\">Address Label Export</a></li>\n";
+		$rv.="<hr>\n";
+	} 
 	$rv.="\t<li><a href=\"utility_logout.php\">Logout</a></li>\n";
 	$rv.="<hr>\n";
 	if(development_mode) {
@@ -321,6 +320,55 @@ function generateEnvelopeBlock($memberInfo,$cardInfo,$cardInfo2=NULL) {
 	$line[]=sprintf("%s, %s %s",$memberInfo['City'],$memberInfo['State'],$memberInfo['Zip']);
 	$block=implode("<br>\n",$line);
 	return $block;
+}
+function generateLabelLine($db=NULL,$keep=NULL) {
+	header("Content-type: text/plain");
+	header("Content-Disposition: attachment; filename=\"AddressLabelData.csv\"");
+	if($db == NULL) {
+		print "DB Handle must be passed to generateLabelLine()";
+		exit();
+	}
+	$sql="SELECT keycard_number,memberID,namefirst,namelast,address,city,state,zip FROM members WHERE printenvelope=1";
+	$res = simpleQuery($sql,true,$db);
+	$data=$res->fetchAll(PDO::FETCH_ASSOC);
+	foreach($data as $memberInfo) {
+		$memberID=$memberInfo['memberID'];
+		$sql="SELECT max(expirationyear) as a FROM membershipcards WHERE memberid={$memberID} AND void=0";
+		$res_temp = simpleQuery($sql,true,$db);
+		$temp_data=$res_temp->fetch(PDO::FETCH_ASSOC);
+		$year=$temp_data['a'];
+		unset($res_temp);
+		unset($temp_data);
+
+		$sql="SELECT expirationyear,cardnumber FROM membershipcards WHERE memberid={$memberID} AND void=0 AND expirationyear={$year} ORDER BY expirationyear DESC,cardnumber ASC LIMIT 2";
+		$res2 = simpleQuery($sql,true,$db);
+		$cardInfo = $res2->fetch(PDO::FETCH_ASSOC);
+		try {
+			$cardInfo2 = $res2->fetch(PDO::FETCH_ASSOC);
+			$nope=false;
+		} catch (Exception $e) {
+			unset($cardInfo2);
+			$nope=true;
+		}
+		$idString=array();
+		$idString[]=$cardInfo['expirationYear'].$cardInfo['cardNumber'];
+		if(isset($cardInfo2['expirationYear'])) {
+			$idString[] = $cardInfo2['expirationYear'].$cardInfo2['cardNumber'];
+		}
+		$id=$memberInfo['keycard_number'].": ";
+		$id.=implode('-',$idString);
+		//if($memberInfo['NameLast'] == 'Hartung') { var_dump($cardInfo2); exit(); }
+		foreach($memberInfo as $k=>$v) {
+			$memberInfo[$k]=preg_replace('/,/','',$v);
+		}
+		printf("%s,%s,%s,%s,%s,%s,%s\n",$memberInfo['NameFirst'],
+			$memberInfo['NameLast'],
+			$memberInfo['address'],
+			$memberInfo['City'],
+			$memberInfo['State'],
+			$memberInfo['Zip'],$id);
+	}
+	//print "<pre>"; var_dump($memberInfo); var_dump($cardInfo); exit();
 }
 function generateEnvelope($db=NULL,$keep=NULL) {
 	if($db == NULL) {
@@ -448,6 +496,7 @@ function getMemberFlags() {
 		'deceased'=>'Deceased',
 		'lifemember'=>'Life Member',
 		'boardmember'=>'Board Member',
+		'trustedmember'=>'Trusted Member',
 		'rso'=>'Credentialed RSO',
 		'active_rso'=>'Active RSO',
 		'welder'=>'Welder',

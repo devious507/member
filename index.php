@@ -107,6 +107,7 @@ function mySearch() {
 	$body.="<tr><td>City, State, Zip</td><td><input type=\"text\" name=\"City\" size=\"15\"></td><td><input type=\"text\" Size=\"4\" name=\"State\"</td><td><input type=\"text\" size=\"8\" name=\"Zip\"></td></tr>\n";
 	$body.="<tr><td>Email</td><td colspan=\"3\"><input type=\"text\" size=\"43\" name=\"email\"></td></tr>\n";
 	$body.="<tr><td>Phone</td><td colspan=\"3\"><input type=\"text\" size=\"43\" name=\"phone\"></td></tr>\n";
+	$body.="<tr><td>Keycard #</td><td colspan=\"3\"><input type=\"text\" size=\"6\" name=\"keycard_number\"></td></tr>\n";
 	$body.="<tr><td colspan=\"4\"><input type=\"submit\" name=\"search\" value=\"Search\"></td></tr>\n";
 	$body.="</table>\n</form>\n";
 	$body.="<p><a href=\"newMember.php\">New Member Entry</a></p>";

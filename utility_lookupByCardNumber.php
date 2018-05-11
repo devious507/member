@@ -2,10 +2,10 @@
 
 require_once("project.php");
 
-if(!isset($_POST['search'])) {
+if(!isset($_GET['search'])) {
 	$year=date('Y');
 	$year++;
-	$body ="<form method=\"POST\" action=\"{$_SERVER['PHP_SELF']}\">";
+	$body ="<form method=\"GET\" action=\"{$_SERVER['PHP_SELF']}\">";
 	$body.="<table cellpadding=\"5\" cellspacing=\"0\" border=\"0\">";
 	$body.="<tr><td>Membership Year</td><td><input type=\"text\" size=\"5\" name=\"expirationYear\" value=\"{$year}\"></td></tr>";
 	$body.="<tr><td>Card Number</td><td><input type=\"text\" size=\"5\" name=\"cardNumber\"></td></tr>";
@@ -13,8 +13,8 @@ if(!isset($_POST['search'])) {
 	$body.="</table></form>";
 	renderPage($body);
 } else {
-	unset($_POST['search']);
-	foreach($_POST as $k=>$v) {
+	unset($_GET['search']);
+	foreach($_GET as $k=>$v) {
 		$w[]=$k.'='.escapeshellarg($v);
 	}
 	$db=myDB();

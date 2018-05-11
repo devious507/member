@@ -3,8 +3,10 @@
 require_once("project.php");
 $db=myDB();
 
-$menu="<ul>";
+$menu="<hr width=\"400\" align=\"left\">";
+$menu.="<ul>";
 if($_SESSION['write'] == 1) {
+	$menu.="\t<li><a href=\"utility_keyCardExport.php\">Export Keycard Info</a></li>\n";
 	$menu.="\t<li><a href=\"utility_uploadData.php\">Upload Data</a></li>\n";
 	$menu.="\t<li><a href=\"utility_scanMissingCards.php\">Scan for Missing Cards</a></li>\n";
 	$menu.="\t<li><a href=\"utility_normalizePhoneNumbers.php\">Normalize Phone Number Formats</a></li>\n";

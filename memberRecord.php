@@ -14,6 +14,7 @@ if(isset($_GET['printable'])) {
 	$tm[]="<a href=\"memberRecord.php?memberID={$_GET['memberID']}\">Normal View</a>";
 } else {
 	$tm[]="<a href=\"memberRecord.php?memberID={$_GET['memberID']}&printable=true\">Printable View</a>";
+	$tm[]="<a href=\"pasteAddress.php?memberID={$_GET['memberID']}\">Square Update</a>";
 	$tm[]="<a href=\"map/index.php?mode=singlemember&value={$_GET['memberID']}\">Map</a>";
 }
 $tmp=mkEnvelopeButton($_GET['memberID'],$db);
@@ -25,7 +26,10 @@ $topMenu="[ ".implode(" | ",$tm)." ]";
 
 $sql_member = "SELECT * FROM members WHERE memberID={$_GET['memberID']}";
 $sql_cards  = "SELECT expirationyear,cardnumber,note,void FROM membershipCards WHERE memberID={$_GET['memberID']} ORDER BY expirationYear DESC, cardNumber DESC LIMIT 8";
-$sql_pymnts = "SELECT bankDepositNumber,datePaid,checknumber,amount,paymenttype,comment FROM duesPaid WHERE memberID={$_GET['memberID']} ORDER BY bankDepositNumber DESC, datePaid DESC, checknumber, amount";
+$sql_pymnts = "SELECT bankDepositNumber,datePaid,checknumber,amount,paymenttype,comment FROM duesPaid WHERE memberID={$_GET['memberID']} ORDER BY bankDepositNumber DESC, datePaid DESC, checknumber, amount LIMIT 15";
+if(isset($_GET['payments']) && $_GET['payments'] == 'all') {
+	$sql_pymnts = "SELECT bankDepositNumber,datePaid,checknumber,amount,paymenttype,comment FROM duesPaid WHERE memberID={$_GET['memberID']} ORDER BY bankDepositNumber DESC, datePaid DESC, checknumber, amount";
+}
 
 
 $res=simpleQuery($sql_pymnts,true,$db);
@@ -146,7 +150,7 @@ $member = "<form method=\"post\" action=\"updateMember.php\">";
 $member.= "<input type=\"hidden\" name=\"memberID\" value=\"{$row['memberID']}\">";
 $member.= "<table cellspacing=\"0\" cellpadding=\"5\" border=\"1\">";
 $member.= "<tr><td class=\"invertBold\">Record # {$row['memberID']}</td><td colspan=\"5\">{$topMenu}</td></tr>";
-$member.= "<tr><td>First Name</td><td><input id=\"focusBox\" type=\"text\" size=\"15\" name=\"NameFirst\" value=\"{$row['NameFirst']}\"></td><td>Last Name</td><td><input type=\"text\" size=\"15\" name=\"NameLast\" value=\"{$row['NameLast']}\"></td><td class=\"topLeft\" rowspan=\"11\">{$infoCol}</td><td rowspan=\"11\" class=\"topLeft\">{$cards}</td></tr>";
+$member.= "<tr><td>First Name</td><td><input id=\"focusBox\" type=\"text\" size=\"15\" name=\"NameFirst\" value=\"{$row['NameFirst']}\"></td><td>Last Name</td><td><input type=\"text\" size=\"15\" name=\"NameLast\" value=\"{$row['NameLast']}\"></td><td class=\"topLeft\" rowspan=\"10\">{$infoCol}</td><td rowspan=\"10\" class=\"topLeft\">{$cards}</td></tr>";
 $member.= "<tr><td>Address</td><td colspan=\"3\"><input type=\"text\" size=\"30\" name=\"address\" value=\"{$row['address']}\"></td></tr>";
 $member.= "<tr><td>City, State Zip</td><td><input type=\"text\" size=\"10\" name=\"City\" value=\"{$row['City']}\"></td><td>, <input type=\"text\" size=\"4\" name=\"State\" value=\"{$row['State']}\"></td><td><input type=\"text\" name=\"Zip\" size=\"6\" value=\"{$row['Zip']}\"></td></tr>";
 $member.= "<tr><td>Phone</td><td colspan=\"3\"><input type=\"text\" name=\"phone\" value=\"{$row['phone']}\" size=\"25\"></td></tr>";
@@ -155,9 +159,10 @@ $member.= "<tr><td>Email</td><td colspan=\"3\"><input type=\"text\" name=\"email
 $member.="<tr><td>Spouse First</td><td><input type=\"text\" size=\"15\" name=\"spouse_first\" value=\"{$row['spouse_first']}\"></td><td>Spouse Last</td><td><input type=\"text\" size=\"15\" name=\"spouse_last\" value=\"{$row['spouse_last']}\"></td></tr>";
 $member.= "<tr><td>Spouse Phone</td><td colspan=\"3\"><input type=\"text\" name=\"spouse_phone\" value=\"{$row['spouse_phone']}\" size=\"25\"></td></tr>";
 $member.= "<tr><td>Spouse Email</td><td colspan=\"3\"><input type=\"text\" name=\"spouse_email\" value=\"{$row['spouse_email']}\" size=\"25\"></td></tr>";
+$member.="<tr><td colspan=\"3\">KeyCard Number</td><td colspan=\"1\" align=\"center\"><input type=\"text\" name=\"keycard_number\" value=\"{$row['keycard_number']}\" size=\"8\"></tr></tr>";
 $member.= "<tr><td colspan=\"4\">Comments</td></tr>";
-$member.= "<tr><td colspan=\"4\"><textarea rows=\"6\" cols=\"50\" name=\"comment\">{$row['comment']}</textarea></td></tr>";
-$member.= "<tr><td colspan=\"4\"><input type=\"submit\" name=\"update\" value=\"Update Record\"></td></tr>";
+$member.= "<tr><td colspan=\"6\"><textarea rows=\"6\" cols=\"102\" name=\"comment\">{$row['comment']}</textarea></td></tr>";
+$member.= "<tr><td colspan=\"6\"><input type=\"submit\" name=\"update\" value=\"Update Record\"></td></tr>";
 $member.= "<tr><td colspan=\"6\">Payment History</td></tr>\n";
 if(isset($payments)) {
 	$member.= "<tr><td colspan=\"6\">{$payments}</td></tr>\n";
